@@ -1,0 +1,58 @@
+In Dart, you can use sockets to establish network communication between a client and server, typically for real-time communication or custom protocols. Dart provides both TCP and UDP socket support through the dart:io library (which is available only in non-web environments like the Dart VM, not in the browser).
+
+Types of Sockets in Dart:
+TCP Sockets: Reliable, connection-oriented communication. Data is guaranteed to be delivered in the correct order.
+
+UDP Sockets: 
+Unreliable, connectionless communication. Data can arrive out of order or get lost, but it's faster and simpler for certain applications.
+
+
+
+import 'dart:io';
+
+Future<void> main() async {
+  // Start a TCP server listening on port 8080
+  var server = await ServerSocket.bind(InternetAddress.anyIPv4, 8080);
+  print('Server running on ${server.address.address}:${server.port}');
+
+  // Handle each client connection
+  server.listen((Socket client) {
+    print('Connection from: ${client.remoteAddress.address}:${client.remotePort}');
+    
+    client.listen(
+      (data) {
+        // Handle data received from the client
+        print('Data from client: ${String.fromCharCodes(data)}');
+        
+        // Send a response to the client
+        client.write('Message received\n');
+      },
+      onDone: () {
+        print('Client disconnected');
+        client.close();
+      },
+    );
+  });
+}
+--------------------------------------------------------------------------------
+
+import 'dart:io';
+
+Future<void> main() async {
+  // Bind a UDP server to a specific port
+  var server = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8080);
+  print('UDP Server listening on port 8080');
+
+  server.listen((RawSocketEvent event) {
+    if (event == RawSocketEvent.read) {
+      Datagram? datagram = server.receive();
+      if (datagram != null) {
+        String message = String.fromCharCodes(datagram.data);
+        print('Message from client: $message');
+        
+        // Send a response back to the client
+        server.send('Message received!'.codeUnits, datagram.address, datagram.port);
+      }
+    }
+  });
+}

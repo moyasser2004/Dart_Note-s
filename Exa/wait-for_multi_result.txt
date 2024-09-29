@@ -1,0 +1,67 @@
+Future<void> deleteLotsOfFiles() async {
+  // Simulating a long operation
+  await Future.delayed(Duration(seconds: 2));
+  print('Deleted lots of files!');
+}
+
+Future<void> copyLotsOfFiles() async {
+  // Simulating a long operation
+  await Future.delayed(Duration(seconds: 3));
+  print('Copied lots of files!');
+}
+
+Future<void> checksumLotsOfOtherFiles() async {
+  // Simulating a long operation
+  await Future.delayed(Duration(seconds: 1));
+  print('Checksummed lots of files!');
+}
+
+void main() async {
+  // Running all three tasks concurrently
+  await Future.wait([
+    deleteLotsOfFiles(),
+    copyLotsOfFiles(),
+    checksumLotsOfOtherFiles(),
+  ]);
+
+  // Once all tasks are complete, this line will be printed
+  print('Done with all the long steps!');
+}
+---------------------------------------------------------------------------------
+
+void main() async {
+  // Simulating some asynchronous operations
+  Future<void> delete() async {
+    await Future.delayed(Duration(seconds: 1));
+    print('Deleted files!');
+  }
+
+  Future<void> copy() async {
+    await Future.delayed(Duration(seconds: 2));
+    print('Copied files!');
+  }
+
+  Future<void> errorResult() async {
+    await Future.delayed(Duration(seconds: 3));
+    throw Exception('Error in operation');
+  }
+
+  try {
+    // Using Future.wait to wait for all futures to complete
+    await Future.wait([
+      delete(),
+      copy(),
+      errorResult(),  // This will throw an error
+    ]);
+
+    // This will only execute if no errors are thrown
+    print('All operations completed successfully!');
+  } catch (e) {
+    // If any future throws an error, it will be caught here
+    print('Error: $e');
+  }
+}
+
+---------------------------------------------------------------------------------
+
+In this case, all three operations are run simultaneously, and the total time to complete will be as long as the slowest operation (3 seconds for copying files). The order in which the completion messages appear depends on the duration of each asynchronous operation.

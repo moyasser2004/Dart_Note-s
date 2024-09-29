@@ -1,0 +1,252 @@
+Generative constructors: Creates new instances and initializes instance variables.
+
+Default constructors: Used to create a new instance when a constructor hasn't been specified. It doesn't take arguments and isn't named.
+
+Named constructors: Clarifies the purpose of a constructor or allows the creation of multiple constructors for the same class.
+
+Constant constructors: Creates instances as compile-type constants.
+
+Factory constructors: Either creates a new instance of a subtype or returns an existing instance from cache.
+
+Redirecting constructor: Forwards calls to another constructor in the same class.
+----------------------------------------------------------------------------------
+Generative constructors:-
+
+class Point {
+  // Initializer list of variables and values
+  double x = 2.0;
+  double y = 2.0;
+
+  // Generative constructor with initializing formal parameters:
+  Point(this.x, this.y);
+}
+
+----------------------------------------------------------------------------------
+Default constructors:-
+
+class Point {
+  // Initializer list of variables and values
+  double x = 2.0;
+  double y = 2.0;
+
+}
+
+----------------------------------------------------------------------------------
+Named constructors:-
+Named constructors are special constructors in Dart that allow you to define multiple ways to instantiate an object. They are useful when you want to provide different ways to create an instance of a class.
+
+//basi named constructors
+class Person {
+  String name;
+  int age;
+
+  // Default constructor
+  Person(this.name, this.age);
+
+  // Named constructor
+  Person.guest() {
+    name = "Guest";
+    age = 18;
+  }
+
+  void display() {
+    print('Name: $name, Age: $age');
+  }
+}
+
+void main() {
+  // Using the default constructor
+  var p1 = Person("Alice", 25);
+  p1.display(); // Output: Name: Alice, Age: 25
+
+  // Using the named constructor
+  var p2 = Person.guest();
+  p2.display(); // Output: Name: Guest, Age: 18
+}
+
+// named constructors
+
+class Rectangle {
+  double width;
+  double height;
+
+  // Default constructor
+  Rectangle(this.width, this.height);
+
+  // Named constructor for creating a square
+  Rectangle.square(double side) {
+    width = side;
+    height = side;
+  }
+
+  double area() => width * height;
+}
+
+void main() {
+  // Using default constructor
+  var rect = Rectangle(5, 10);
+  print('Rectangle area: ${rect.area()}'); // Output: Rectangle area: 50
+
+  // Using named constructor for a square
+  var square = Rectangle.square(4);
+  print('Square area: ${square.area()}'); // Output: Square area: 16
+}
+
+// Named Constructor for Initializing from JSON
+this create only one object of class
+
+class Product {
+  String name;
+  double price;
+
+  // Default constructor
+  Product(this.name, this.price);
+
+  // Named constructor for initializing from JSON
+  Product.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    price = json['price'];
+  }
+
+  void display() {
+    print('Product: $name, Price: $price');
+  }
+}
+
+void main() {
+  Map<String, dynamic> json = {'name': 'Laptop', 'price': 1500.0};
+  var product = Product.fromJson(json);
+  product.display(); // Output: Product: Laptop, Price: 1500.0
+}
+----------------------------------------------------------------------------------
+Constant constructors:-
+
+class ImmutablePoint {
+
+  static const ImmutablePoint origin = ImmutablePoint(0, 0);
+  final double x, y;
+
+  const ImmutablePoint(this.x, this.y);
+}
+
+----------------------------------------------------------------------------------
+
+In Dart, a factory constructor is a special type of constructor that doesn’t necessarily create a new instance of the class every time it is called. Instead, it can return an existing instance, create a new one, or return an instance of a subtype. Factory constructors are useful when object creation involves logic, such as caching or returning specific instances based on conditions.
+
+Key Points of a Factory Constructor:
+A factory constructor doesn’t always have to return a new instance of the class.
+It can return an existing instance or a new instance based on custom logic.
+It’s useful when controlling instance creation, such as when implementing design patterns like the singleton pattern.
+
+
+// basic factoy construction
+class ClassName {
+  // Factory constructor
+  factory ClassName() {
+    // Logic to return an instance of the class
+  }
+}
+
+
+//Singleton Pattern
+class Person {
+
+  String name;
+  int age;
+
+  static Person? _instance;
+
+  Person._(this.name, this.age);
+
+factory Person(String name,int age) {
+    if (_instance == null) {
+      _instance = Person._(name, age);
+      print('New instaance connection created.');
+    }
+    return _instance!;
+  }
+}
+
+
+void main() {
+  var db1 = DatabaseConnection(); // New connection created
+  var db2 = DatabaseConnection(); // Reuses the existing connection
+
+  print(db1 == db2); // Output: true (both are the same instance)
+}
+
+//Returning Different Subtypes
+
+abstract class Shape {
+  void draw();
+}
+
+class Circle implements Shape {
+  @override
+  void draw() => print('Drawing a circle.');
+}
+
+class Square implements Shape {
+  @override
+  void draw() => print('Drawing a square.');
+}
+
+class ShapeFactory {
+  // Factory constructor that returns different types of shapes
+  factory ShapeFactory(String shapeType) {
+    if (shapeType == 'circle') {
+      return Circle();
+    } else if (shapeType == 'square') {
+      return Square();
+    } else {
+      throw 'Shape not recognized.';
+    }
+  }
+}
+
+void main() {
+  Shape shape1 = ShapeFactory('circle');
+  shape1.draw(); // Output: Drawing a circle.
+
+  Shape shape2 = ShapeFactory('square');
+  shape2.draw(); // Output: Drawing a square.
+}
+
+
+// Initializing from External Data
+class User {
+  final String name;
+  final int age;
+
+  // Private constructor
+  User._(this.name, this.age);
+
+  // Factory constructor for creating User from JSON
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User._(json['name'], json['age']);
+  }
+
+  @override
+  String toString() => 'User: $name, Age: $age';
+}
+
+void main() {
+  Map<String, dynamic> json = {'name': 'John Doe', 'age': 30};
+  var user = User.fromJson(json);
+
+  print(user); // Output: User: John Doe, Age: 30
+}
+
+Differences:
+The named constructor (Product.fromJson) directly sets the instance fields (name, price) of the current object. It is a straightforward way of initializing an object.
+
+The factory constructor creates a new instance of Product by calling the default constructor. This version is more flexible and allows for additional logic or optimizations (e.g., returning a cached instance if needed).
+
+Conclusion:
+If you need a straightforward constructor that simply initializes an object from JSON, the named constructor (first version) is fine.
+
+If you want more flexibility (e.g., adding complex initialization logic, returning a cached instance), then the factory constructor (second version) is more appropriate
+
+
+
+

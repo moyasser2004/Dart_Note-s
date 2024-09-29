@@ -1,0 +1,64 @@
+Dart does not support traditional method overloading, which is common in languages like Java or C++. In traditional method overloading, you can define multiple methods with the same name but different parameter lists (i.e., different types or numbers of parameters).
+
+
+
+
+// Optional Positional Parameters:-
+
+class Calculator {
+  // Method with optional positional parameters
+  int add(int a, [int? b]) {
+    // If 'b' is not provided, default it to 0
+    return a + (b ?? 0);
+  }
+}
+
+void main() {
+  var calc = Calculator();
+  
+  print(calc.add(5));      // Output: 5 (since b is null, defaults to 0)
+  print(calc.add(5, 10));  // Output: 15
+}
+
+
+// Optional Named Parameters:-
+
+class Calculator {
+  // Method with optional named parameters
+  int add({required int a, int b = 0}) {
+    return a + b;
+  }
+}
+
+void main() {
+  var calc = Calculator();
+  
+  print(calc.add(a: 5));       // Output: 5 (b defaults to 0)
+  print(calc.add(a: 5, b: 10)); // Output: 15
+}
+
+
+//Using dynamic for Overloading Behavior (Not Recommended):-
+
+class Printer {
+  void printValue(dynamic value) {
+    if (value is int) {
+      print('Integer value: $value');
+    } else if (value is double) {
+      print('Double value: $value');
+    } else if (value is String) {
+      print('String value: $value');
+    } else {
+      print('Unknown type');
+    }
+  }
+}
+
+void main() {
+  var printer = Printer();
+  
+  printer.printValue(10);       // Output: Integer value: 10
+  printer.printValue(10.5);     // Output: Double value: 10.5
+  printer.printValue('Hello');  // Output: String value: Hello
+}
+

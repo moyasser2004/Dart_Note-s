@@ -1,0 +1,49 @@
+In Dart, isolates are the fundamental units of concurrency. Unlike threads, which share memory space, isolates do not share memory. Each isolate has its own separate memory heap and runs independently. Communication between isolates happens via message passing using ports.
+
+This architecture is designed to prevent race conditions and make Dart's concurrency model safe, as there’s no need for locks or mutexes when accessing shared data because isolates cannot share data.
+
+Key Concepts of Isolates in Dart
+Main Isolate: Every Dart program starts in a single isolate, called the main isolate. This is where most of your application logic runs unless you explicitly create additional isolates.
+
+Spawning New Isolates: You can create a new isolate using the Isolate.spawn function. This creates a new isolate and allows you to send initial data to it.
+
+Communication Between Isolates:
+
+Communication happens through ports. The SendPort is used to send messages to an isolate, and the ReceivePort is used to receive messages.
+Since isolates don’t share memory, data must be serialized when sent between isolates.
+Use Cases:
+
+Isolates are typically used for CPU-bound tasks like:
+Complex calculations
+Data parsing or transformation
+Image processing
+Handling intensive tasks without blocking the UI (in Flutter, for example)
+
+--------------------------------------------------------------------
+
+Future<Map<String, dynamic>> _readAndParseJson() async {
+  final fileData = await File(filename).readAsString();
+  final jsonData = jsonDecode(fileData) as Map<String, dynamic>;
+  return jsonData;
+}
+
+void main() async {
+  // Read some data.
+  final jsonData = await Isolate.run(_readAndParseJson);
+
+  // Use that data.
+  print('Number of JSON keys: ${jsonData.length}');
+}
+
+-------------------------------------------------------------------------------
+Future loadJson()async{
+final String jsonString = await roootBundel.loadString("path")
+final data = await Isolate.run((){
+final json = jsonDecode(jsonString )
+return json.map(MyObject.fromJson)
+});
+return data;
+}
+
+
+https://dart.dev/language/isolates
